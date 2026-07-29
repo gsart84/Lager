@@ -1,12 +1,15 @@
-# SPS Lager PWA v0.7 – B&R OCR
+# SPS Lager PWA v0.8 – Produktkarten
 
 Neu:
-- Schmaler Lupenrahmen nur für die obere X20-Typenzeile
-- Digitalzoom 1.8× / 2.4× / 3×
-- Dreifache OCR-Auswertung mit unterschiedlichen Kontraststufen
-- X20 BT 9400 wird automatisch zu X20BT9400
-- X2O wird automatisch zu X20 korrigiert
-- Strenge Prüfung auf typische B&R-X20-Artikelcodes
-- Barcode-Modus und vorhandene Lagerdaten bleiben erhalten
+- Kamera, Barcode und OCR vollständig entfernt
+- Startseite mit grossen Produktkarten
+- Produkt antippen und direkt ein- oder ausbuchen
+- Einstellungen mit „Neues Produkt hinzufügen“
+- Produkte bearbeiten und löschen
+- CSV, Excel, PDF und Backup bleiben erhalten
+- bestehende lokale Datenbank wird weiterverwendet
 
-GitHub: alle losen Dateien hochladen, index.html und service-worker.js ersetzen.
+## GitHub-Update
+Alle losen Dateien ins Hauptverzeichnis hochladen.
+Wichtig: index.html und service-worker.js ersetzen.
+Neue Dateien: app-v08.js, style-v08.css, manifest-v08.webmanifest.

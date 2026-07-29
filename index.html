@@ -2,151 +2,153 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#f36c21">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="SPS Lager">
-  <meta name="description" content="Lokale SPS-Lagerverwaltung mit Barcode-Scanner">
-  <link rel="manifest" href="./manifest-v07.webmanifest">
+  <meta name="description" content="Lokale Lagerverwaltung für SPS-Produkte">
+  <link rel="manifest" href="./manifest-v08.webmanifest">
   <link rel="apple-touch-icon" href="./apple-touch-icon.png">
   <link rel="icon" href="./icon-192.png">
-  <link rel="stylesheet" href="./style-v07.css?v=70">
+  <link rel="stylesheet" href="./style-v08.css?v=80">
   <title>SPS Lager</title>
 </head>
 <body>
 <div id="app">
   <header class="topbar">
-    <div><div class="kicker">LOKALE INVENTARVERWALTUNG</div><h1>SPS Lager</h1></div>
-    <span class="local-pill">lokal</span>
+    <div>
+      <div class="kicker">Lokale Inventarverwaltung</div>
+      <h1>SPS Lager</h1>
+    </div>
+    <button id="settingsBtn" class="settings-button" type="button" aria-label="Einstellungen">⚙</button>
   </header>
 
   <main>
-    <section id="home" class="view active">
-      <article class="total-card">
-        <span>Gesamtbestand</span>
-        <strong id="pieceCount">0</strong>
-        <small id="articleCount">0 verschiedene Artikel</small>
-        <div class="grid-mark">▦</div>
-      </article>
-
-      <button id="scanBtn" class="scan-main" type="button">
-        <span class="scan-symbol">⌁</span>
-        <span><strong>Barcode scannen</strong><small>Artikel finden oder neu anlegen</small></span>
-        <b>›</b>
-      </button>
-
-      <button id="ocrBtn" class="scan-main ocr-main" type="button">
-        <span class="scan-symbol">X20</span>
-        <span><strong>B&R-X20-Zeile lesen</strong><small>X20-Code mit Lupen-OCR lesen</small></span>
-        <b>›</b>
-      </button>
-
-      <button id="listBtn" class="menu-card" type="button">
-        <span class="menu-icon">☷</span><span><strong>Lagerübersicht</strong><small>Alle Karten und Bestände</small></span><b>›</b>
-      </button>
-      <button id="manualBtn" class="outline-button" type="button">＋ Artikel ohne Scanner anlegen</button>
-
-      <article class="notice"><strong>Alles bleibt auf diesem Gerät.</strong><p>Keine Anmeldung, kein Server, keine Cloud. Exporte erzeugst du nur bewusst.</p></article>
-    </section>
-
-    <section id="scanner" class="view">
-      <div class="page-head"><button class="back" type="button">‹</button><div><div class="kicker">KAMERA</div><h2>Barcode scannen</h2></div></div>
-      <article class="panel">
-        <div id="reader" class="scanner-box"></div>
-        <p id="scanStatus" class="status">Kamera wird vorbereitet …</p>
-        <button id="stopScan" class="secondary" type="button">Scanner beenden</button>
-      </article>
-    </section>
-
-
-    <section id="ocr" class="view">
-      <div class="page-head"><button class="back" type="button">‹</button><div><div class="kicker">TEXTKAMERA</div><h2>B&R-X20-Zeile lesen</h2></div></div>
-      <article class="panel">
-        <div class="ocr-camera">
-          <video id="ocrVideo" playsinline autoplay muted></video>
-          <div class="ocr-mask">
-            <div class="ocr-target"><span>X20-Zeile hier ausrichten</span></div>
-          </div>
+    <section id="homeView" class="view active">
+      <article class="summary-card">
+        <div>
+          <span>Gesamtbestand</span>
+          <strong id="totalStock">0</strong>
+          <small id="productCount">0 Produkte</small>
         </div>
-        <canvas id="ocrCanvas" hidden></canvas>
-        <div class="zoom-row">
-          <span>Digitale Lupe</span>
-          <div class="zoom-buttons">
-            <button type="button" data-zoom="1.8">1.8×</button>
-            <button type="button" data-zoom="2.4" class="active">2.4×</button>
-            <button type="button" data-zoom="3">3×</button>
-          </div>
+        <div class="summary-mark">X20</div>
+      </article>
+
+      <div class="section-head">
+        <div>
+          <span>Produkte</span>
+          <h2>Produkt auswählen</h2>
         </div>
-        <p id="ocrHint" class="ocr-hint">Nur die obere Typenzeile in den schmalen Rahmen legen. Möglichst gerade und formatfüllend.</p>
-        <p id="ocrStatus" class="status">Kamera wird vorbereitet …</p>
-        <button id="ocrCaptureBtn" class="primary" type="button">X20-Zeile lesen</button>
-        <button id="ocrStopBtn" class="secondary" type="button">Kamera beenden</button>
-      </article>
+      </div>
+
+      <input id="searchInput" class="search-input" type="search" placeholder="Produkt suchen …">
+      <div id="productGrid" class="product-grid"></div>
     </section>
 
-    <section id="ocrResult" class="view">
-      <div class="page-head"><button class="back" type="button">‹</button><div><div class="kicker">OCR-ERGEBNIS</div><h2>Erkannter Artikelcode</h2></div></div>
-      <article class="code-card">
-        <span>Gefundener X20-Code</span>
-        <strong id="ocrResultCode">–</strong>
-        <small id="ocrRawText">Bitte Treffer kontrollieren.</small>
-      </article>
-      <article class="panel form-stack">
-        <button id="ocrAcceptBtn" class="primary" type="button">Code übernehmen</button>
-        <button id="ocrRetryBtn" class="secondary" type="button">Nochmals fotografieren</button>
-        <button id="ocrEditBtn" class="text-button" type="button">Code manuell korrigieren</button>
-      </article>
-    </section>
+    <section id="stockView" class="view">
+      <div class="page-head">
+        <button class="back-button" data-home type="button">‹</button>
+        <div>
+          <span>Bestand buchen</span>
+          <h2 id="stockProductName">Produkt</h2>
+        </div>
+      </div>
 
-    <section id="newArticle" class="view">
-      <div class="page-head"><button class="back" type="button">‹</button><div><div class="kicker">NEUER ARTIKEL</div><h2>Bestand erfassen</h2></div></div>
-      <article class="code-card"><span>Erkannter Code</span><strong id="newCodeText">–</strong><small>Wird automatisch als Artikelname verwendet.</small><input id="newBarcode" type="hidden"></article>
-      <form id="newForm" class="panel form-stack">
-        <label>Anfangsbestand<input id="newStock" type="number" inputmode="numeric" min="0" step="1" value="0" required></label>
-        <button id="saveArticleBtn" class="primary" type="button">Artikel speichern</button>
-        <button id="editNameBeforeSave" class="secondary" type="button">Anderen Anzeigenamen verwenden</button>
-      </form>
-    </section>
+      <article class="stock-card">
+        <span>Aktueller Bestand</span>
+        <strong id="currentStock">0</strong>
+        <small>Stück</small>
+      </article>
 
-    <section id="adjust" class="view">
-      <div class="page-head"><button class="back" type="button">‹</button><div><div class="kicker">BESTAND BUCHEN</div><h2 id="adjustName">Artikel</h2><div id="adjustCode" class="subcode"></div></div></div>
-      <article class="stock-card"><span>Aktueller Bestand</span><strong id="currentStock">0</strong><small>Stück</small></article>
-      <article class="panel form-stack">
-        <label>Änderung<input id="delta" type="number" inputmode="numeric" step="1" value="-1"></label>
+      <article class="panel">
+        <div class="mode-switch">
+          <button id="bookInMode" class="active" type="button">Einbuchen</button>
+          <button id="bookOutMode" type="button">Ausbuchen</button>
+        </div>
+
+        <label class="field-label">
+          Menge
+          <input id="quantityInput" type="number" inputmode="numeric" min="1" step="1" value="1">
+        </label>
+
         <div class="quick-grid">
-          <button type="button" data-delta="-10">−10</button><button type="button" data-delta="-5">−5</button><button type="button" data-delta="-1">−1</button>
-          <button type="button" data-delta="1">+1</button><button type="button" data-delta="5">+5</button><button type="button" data-delta="10">+10</button>
+          <button type="button" data-qty="1">1</button>
+          <button type="button" data-qty="5">5</button>
+          <button type="button" data-qty="10">10</button>
+          <button type="button" data-qty="25">25</button>
+          <button type="button" data-qty="50">50</button>
+          <button type="button" data-qty="100">100</button>
         </div>
-        <button id="bookContinueBtn" class="primary" type="button">Buchen &amp; weiter scannen</button>
-        <button id="bookBtn" class="secondary" type="button">Nur buchen</button>
-        <button id="editBtn" class="text-button" type="button">Artikel bearbeiten</button>
+
+        <button id="applyStockBtn" class="primary-button" type="button">1 Stück einbuchen</button>
       </article>
     </section>
 
-    <section id="edit" class="view">
-      <div class="page-head"><button class="back" type="button">‹</button><div><div class="kicker">ARTIKEL BEARBEITEN</div><h2 id="editTitle">Artikel</h2></div></div>
-      <form id="editForm" class="panel form-stack">
-        <label>Barcode<input id="editBarcode" type="text" disabled></label>
-        <label>Anzeigename<input id="editName" type="text" required></label>
-        <button class="primary" type="submit">Änderung speichern</button>
-      </form>
+    <section id="settingsView" class="view">
+      <div class="page-head">
+        <button class="back-button" data-home type="button">‹</button>
+        <div>
+          <span>Verwaltung</span>
+          <h2>Einstellungen</h2>
+        </div>
+      </div>
+
+      <button id="newProductBtn" class="wide-action" type="button">
+        <span class="wide-icon">＋</span>
+        <span><strong>Neues Produkt hinzufügen</strong><small>Produktname und Anfangsbestand erfassen</small></span>
+        <b>›</b>
+      </button>
+
+      <article class="panel settings-panel">
+        <h3>Produkte verwalten</h3>
+        <div id="settingsProductList" class="settings-product-list"></div>
+      </article>
+
+      <article class="panel">
+        <h3>Daten</h3>
+        <div class="export-grid">
+          <button id="csvBtn" type="button">CSV</button>
+          <button id="xlsBtn" type="button">Excel</button>
+          <button id="pdfBtn" type="button">PDF</button>
+          <button id="backupBtn" type="button">Backup</button>
+        </div>
+        <label class="restore-label">
+          Backup wiederherstellen
+          <input id="restoreInput" type="file" accept=".json,application/json">
+        </label>
+      </article>
     </section>
 
-    <section id="inventory" class="view">
-      <div class="page-head"><button class="back" type="button">‹</button><div><div class="kicker">ALLE ARTIKEL</div><h2>Lagerübersicht</h2><div id="inventoryStats" class="subcode"></div></div></div>
-      <input id="search" class="search" type="search" placeholder="Artikel oder Barcode suchen">
-      <div id="items" class="items"></div>
-      <article class="export-card">
-        <h3>Lager exportieren</h3>
-        <div class="export-grid"><button id="csvBtn">CSV</button><button id="xlsBtn">Excel</button><button id="pdfBtn">PDF</button><button id="backupBtn">Backup</button></div>
-        <label class="restore-label">Backup wiederherstellen<input id="restore" type="file" accept=".json,application/json"></label>
+    <section id="productFormView" class="view">
+      <div class="page-head">
+        <button class="back-button" id="backToSettings" type="button">‹</button>
+        <div>
+          <span id="formKicker">Neues Produkt</span>
+          <h2 id="formTitle">Produkt anlegen</h2>
+        </div>
+      </div>
+
+      <article class="panel">
+        <label class="field-label">
+          Produktname
+          <input id="productNameInput" type="text" autocomplete="off" autocapitalize="characters" placeholder="z. B. X20BT9400">
+        </label>
+
+        <label id="initialStockWrap" class="field-label">
+          Anfangsbestand
+          <input id="initialStockInput" type="number" inputmode="numeric" min="0" step="1" value="0">
+        </label>
+
+        <button id="saveProductBtn" class="primary-button" type="button">Produkt speichern</button>
+        <button id="deleteProductBtn" class="danger-button hidden" type="button">Produkt löschen</button>
       </article>
     </section>
   </main>
+
   <div id="toast" class="toast"></div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
-<script src="./app-v07.js?v=70"></script>
-</body></html>
+
+<script src="./app-v08.js?v=80"></script>
+</body>
+</html>

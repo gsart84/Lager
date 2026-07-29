@@ -1,0 +1,78 @@
+
+:root{
+  --orange:#f36c21;
+  --orange-soft:#fff1e8;
+  --black:#111111;
+  --muted:#6d6d6d;
+  --line:#e4e4e4;
+  --bg:#f7f7f7;
+  --white:#ffffff;
+  --danger:#c62828;
+  --shadow:0 10px 28px rgba(0,0,0,.08);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
+  color:var(--black);
+  background:var(--bg);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg)}
+body{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+button,input{font:inherit}
+button{color:inherit}
+#app{max-width:760px;margin:auto;min-height:100vh}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:24px 18px 18px;background:#fff;border-bottom:4px solid var(--orange)}
+.kicker,.page-head span,.section-head span{display:block;color:var(--orange);font-size:11px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+h1,h2,h3,p{margin:0}
+h1{font-size:32px;letter-spacing:-1px;margin-top:5px}
+h2{font-size:26px;letter-spacing:-.6px;margin-top:4px}
+h3{font-size:18px;margin-bottom:14px}
+.settings-button{width:48px;height:48px;border:2px solid #111;border-radius:16px;background:#fff;font-size:22px}
+main{padding:20px 16px 32px}
+.view{display:none}.view.active{display:block}
+.summary-card{background:var(--orange);border-radius:24px;padding:22px;color:#111;display:flex;justify-content:space-between;align-items:center;box-shadow:0 14px 32px rgba(243,108,33,.22)}
+.summary-card span{font-size:14px;font-weight:700}
+.summary-card strong{display:block;font-size:64px;line-height:.95;letter-spacing:-3px;margin:8px 0}
+.summary-card small{font-size:16px;font-weight:750}
+.summary-mark{width:82px;height:82px;border:3px solid rgba(0,0,0,.18);border-radius:22px;display:grid;place-items:center;font-weight:950;font-size:24px}
+.section-head{margin:26px 2px 12px}
+.search-input{width:100%;border:1px solid var(--line);border-radius:16px;background:#fff;padding:15px 16px;font-size:17px;outline:none;margin-bottom:14px}
+.search-input:focus{border-color:var(--orange);box-shadow:0 0 0 4px rgba(243,108,33,.12)}
+.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.product-card{min-height:150px;border:1px solid var(--line);border-radius:22px;background:#fff;padding:18px;text-align:left;box-shadow:0 5px 18px rgba(0,0,0,.045);display:flex;flex-direction:column;justify-content:space-between}
+.product-card:active{transform:scale(.985)}
+.product-name{font-size:23px;font-weight:950;letter-spacing:-.5px;word-break:break-word}
+.product-stock{display:flex;justify-content:space-between;align-items:end;margin-top:18px}
+.product-stock span{font-size:13px;color:var(--muted);font-weight:700}
+.product-stock strong{font-size:34px;color:var(--orange);line-height:1}
+.empty-state{grid-column:1/-1;padding:34px 20px;text-align:center;background:#fff;border:1px dashed #ccc;border-radius:20px;color:var(--muted)}
+.page-head{display:flex;gap:13px;align-items:center;margin-bottom:18px}
+.back-button{width:48px;height:48px;border:1px solid var(--line);border-radius:16px;background:#fff;font-size:32px;line-height:1}
+.stock-card,.panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:19px;box-shadow:var(--shadow)}
+.stock-card{text-align:center;margin-bottom:14px}
+.stock-card span,.stock-card small{color:var(--muted)}
+.stock-card strong{display:block;font-size:72px;letter-spacing:-4px;margin:3px 0}
+.mode-switch{display:grid;grid-template-columns:1fr 1fr;background:#efefef;border-radius:15px;padding:4px;margin-bottom:18px}
+.mode-switch button{border:0;background:transparent;border-radius:12px;padding:12px;font-weight:900}
+.mode-switch button.active{background:var(--orange);color:#111}
+.field-label{display:block;font-size:13px;font-weight:900;margin-bottom:16px}
+.field-label input{width:100%;margin-top:7px;border:1px solid var(--line);border-radius:15px;background:#fafafa;padding:15px;font-size:18px;outline:none}
+.field-label input:focus{border-color:var(--orange);box-shadow:0 0 0 4px rgba(243,108,33,.12);background:#fff}
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:16px}
+.quick-grid button{border:1px solid var(--line);border-radius:14px;background:#fff;padding:14px;font-weight:900}
+.primary-button,.danger-button{width:100%;border:0;border-radius:16px;padding:16px;font-weight:950;font-size:16px}
+.primary-button{background:var(--orange);color:#111}
+.danger-button{margin-top:10px;background:#fff0f0;color:var(--danger);border:1px solid #efb4b4}
+.wide-action{width:100%;border:2px solid var(--orange);border-radius:20px;background:var(--orange-soft);padding:16px;display:flex;align-items:center;gap:13px;text-align:left;margin-bottom:14px}
+.wide-icon{width:46px;height:46px;border-radius:14px;background:var(--orange);display:grid;place-items:center;font-size:25px;font-weight:900}
+.wide-action>span:nth-child(2){flex:1}.wide-action strong{display:block}.wide-action small{display:block;color:var(--muted);margin-top:4px}.wide-action b{font-size:28px}
+.settings-panel{margin-bottom:14px}
+.settings-product-list{display:grid;gap:9px}
+.settings-product{width:100%;border:1px solid var(--line);border-radius:15px;background:#fafafa;padding:13px 14px;display:flex;justify-content:space-between;align-items:center;text-align:left}
+.settings-product strong{font-size:16px}.settings-product span{color:var(--muted);font-size:13px}
+.export-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.export-grid button{border:1px solid var(--line);background:#fff;border-radius:13px;padding:12px 4px;font-weight:900;color:var(--orange)}
+.restore-label{display:block;margin-top:17px;font-size:13px;font-weight:900}
+.restore-label input{display:block;margin-top:8px;width:100%}
+.hidden{display:none!important}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom));transform:translate(-50%,25px);opacity:0;background:#111;color:#fff;padding:12px 17px;border-radius:999px;font-weight:800;transition:.2s;z-index:20;text-align:center;max-width:calc(100vw - 30px)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:430px){.product-grid{grid-template-columns:1fr 1fr}.product-name{font-size:20px}.summary-card strong{font-size:58px}}
