@@ -8,10 +8,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="SPS Lager">
   <meta name="description" content="Lokale SPS-Lagerverwaltung mit Barcode-Scanner">
-  <link rel="manifest" href="./manifest-v06.webmanifest">
+  <link rel="manifest" href="./manifest-v07.webmanifest">
   <link rel="apple-touch-icon" href="./apple-touch-icon.png">
   <link rel="icon" href="./icon-192.png">
-  <link rel="stylesheet" href="./style-v06.css?v=60">
+  <link rel="stylesheet" href="./style-v07.css?v=70">
   <title>SPS Lager</title>
 </head>
 <body>
@@ -38,7 +38,7 @@
 
       <button id="ocrBtn" class="scan-main ocr-main" type="button">
         <span class="scan-symbol">X20</span>
-        <span><strong>X20-Aufdruck erkennen</strong><small>Schwarze Schrift auf grauem Gehäuse lesen</small></span>
+        <span><strong>B&R-X20-Zeile lesen</strong><small>X20-Code mit Lupen-OCR lesen</small></span>
         <b>›</b>
       </button>
 
@@ -61,17 +61,26 @@
 
 
     <section id="ocr" class="view">
-      <div class="page-head"><button class="back" type="button">‹</button><div><div class="kicker">TEXTKAMERA</div><h2>X20-Aufdruck erkennen</h2></div></div>
+      <div class="page-head"><button class="back" type="button">‹</button><div><div class="kicker">TEXTKAMERA</div><h2>B&R-X20-Zeile lesen</h2></div></div>
       <article class="panel">
         <div class="ocr-camera">
           <video id="ocrVideo" playsinline autoplay muted></video>
           <div class="ocr-mask">
-            <div class="ocr-target"><span>X20… hier ausrichten</span></div>
+            <div class="ocr-target"><span>X20-Zeile hier ausrichten</span></div>
           </div>
         </div>
         <canvas id="ocrCanvas" hidden></canvas>
+        <div class="zoom-row">
+          <span>Digitale Lupe</span>
+          <div class="zoom-buttons">
+            <button type="button" data-zoom="1.8">1.8×</button>
+            <button type="button" data-zoom="2.4" class="active">2.4×</button>
+            <button type="button" data-zoom="3">3×</button>
+          </div>
+        </div>
+        <p id="ocrHint" class="ocr-hint">Nur die obere Typenzeile in den schmalen Rahmen legen. Möglichst gerade und formatfüllend.</p>
         <p id="ocrStatus" class="status">Kamera wird vorbereitet …</p>
-        <button id="ocrCaptureBtn" class="primary" type="button">Aufdruck erkennen</button>
+        <button id="ocrCaptureBtn" class="primary" type="button">X20-Zeile lesen</button>
         <button id="ocrStopBtn" class="secondary" type="button">Kamera beenden</button>
       </article>
     </section>
@@ -138,6 +147,6 @@
   <div id="toast" class="toast"></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-<script src="./app-v06.js?v=60"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<script src="./app-v07.js?v=70"></script>
 </body></html>

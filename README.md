@@ -1,16 +1,12 @@
-# SPS Lager PWA v0.6 OCR
+# SPS Lager PWA v0.7 – B&R OCR
 
 Neu:
-- Barcode scannen
-- X20-Aufdruck per Kamera erkennen
-- OCR sucht ausschliesslich nach Codes, die mit X20 beginnen
-- Kontrastverstärkung für schwarze Schrift auf grauem Kunststoff
-- Treffer wird vor dem Übernehmen angezeigt
-- Vorhandene IndexedDB-Lagerdaten bleiben erhalten
+- Schmaler Lupenrahmen nur für die obere X20-Typenzeile
+- Digitalzoom 1.8× / 2.4× / 3×
+- Dreifache OCR-Auswertung mit unterschiedlichen Kontraststufen
+- X20 BT 9400 wird automatisch zu X20BT9400
+- X2O wird automatisch zu X20 korrigiert
+- Strenge Prüfung auf typische B&R-X20-Artikelcodes
+- Barcode-Modus und vorhandene Lagerdaten bleiben erhalten
 
-## GitHub-Update
-Alle losen Dateien in das Root-Verzeichnis des Repositories hochladen.
-Wichtig: index.html und service-worker.js ersetzen.
-Neue Dateien: app-v06.js, style-v06.css, manifest-v06.webmanifest.
-
-Beim ersten OCR-Einsatz ist Internet nötig, damit Tesseract.js und das englische Erkennungsmodell geladen werden.
+GitHub: alle losen Dateien hochladen, index.html und service-worker.js ersetzen.
