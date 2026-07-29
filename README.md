@@ -1,15 +1,28 @@
-# SPS Lager PWA v0.8 – Produktkarten
+# SPS Lager PWA v0.9 – echter Excel-Export
 
 Neu:
-- Kamera, Barcode und OCR vollständig entfernt
-- Startseite mit grossen Produktkarten
-- Produkt antippen und direkt ein- oder ausbuchen
-- Einstellungen mit „Neues Produkt hinzufügen“
-- Produkte bearbeiten und löschen
-- CSV, Excel, PDF und Backup bleiben erhalten
-- bestehende lokale Datenbank wird weiterverwendet
+- Der bisherige HTML-als-XLS-Trick wurde entfernt.
+- Excel-Export erzeugt jetzt eine echte `.xlsx`-Datei.
+- Keine Warnung mehr wegen nicht passender Dateiendung.
+- Arbeitsblatt „Lagerübersicht“ mit:
+  - Produkt
+  - Bestand
+  - Letzte Änderung
+  - Gesamtbestand
+  - Exportdatum
+  - Autofilter
+  - fixierter Kopfzeile
+  - passenden Spaltenbreiten
+- CSV, PDF und JSON-Backup bleiben erhalten.
+- Bestehende Produkte und Bestände bleiben erhalten.
 
 ## GitHub-Update
-Alle losen Dateien ins Hauptverzeichnis hochladen.
-Wichtig: index.html und service-worker.js ersetzen.
-Neue Dateien: app-v08.js, style-v08.css, manifest-v08.webmanifest.
+Alle losen Dateien in das Hauptverzeichnis hochladen.
+Wichtig:
+- `index.html` ersetzen
+- `service-worker.js` ersetzen
+- `app-v09.js`
+- `style-v09.css`
+- `manifest-v09.webmanifest`
+
+Beim ersten Excel-Export ist Internet erforderlich, damit SheetJS geladen und danach offline zwischengespeichert wird.
