@@ -8,10 +8,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="SPS Lager">
   <meta name="description" content="Lokale SPS-Lagerverwaltung mit Barcode-Scanner">
-  <link rel="manifest" href="./manifest-v05.webmanifest">
+  <link rel="manifest" href="./manifest-v06.webmanifest">
   <link rel="apple-touch-icon" href="./apple-touch-icon.png">
   <link rel="icon" href="./icon-192.png">
-  <link rel="stylesheet" href="./style-v05.css?v=51">
+  <link rel="stylesheet" href="./style-v06.css?v=60">
   <title>SPS Lager</title>
 </head>
 <body>
@@ -36,6 +36,12 @@
         <b>›</b>
       </button>
 
+      <button id="ocrBtn" class="scan-main ocr-main" type="button">
+        <span class="scan-symbol">X20</span>
+        <span><strong>X20-Aufdruck erkennen</strong><small>Schwarze Schrift auf grauem Gehäuse lesen</small></span>
+        <b>›</b>
+      </button>
+
       <button id="listBtn" class="menu-card" type="button">
         <span class="menu-icon">☷</span><span><strong>Lagerübersicht</strong><small>Alle Karten und Bestände</small></span><b>›</b>
       </button>
@@ -50,6 +56,37 @@
         <div id="reader" class="scanner-box"></div>
         <p id="scanStatus" class="status">Kamera wird vorbereitet …</p>
         <button id="stopScan" class="secondary" type="button">Scanner beenden</button>
+      </article>
+    </section>
+
+
+    <section id="ocr" class="view">
+      <div class="page-head"><button class="back" type="button">‹</button><div><div class="kicker">TEXTKAMERA</div><h2>X20-Aufdruck erkennen</h2></div></div>
+      <article class="panel">
+        <div class="ocr-camera">
+          <video id="ocrVideo" playsinline autoplay muted></video>
+          <div class="ocr-mask">
+            <div class="ocr-target"><span>X20… hier ausrichten</span></div>
+          </div>
+        </div>
+        <canvas id="ocrCanvas" hidden></canvas>
+        <p id="ocrStatus" class="status">Kamera wird vorbereitet …</p>
+        <button id="ocrCaptureBtn" class="primary" type="button">Aufdruck erkennen</button>
+        <button id="ocrStopBtn" class="secondary" type="button">Kamera beenden</button>
+      </article>
+    </section>
+
+    <section id="ocrResult" class="view">
+      <div class="page-head"><button class="back" type="button">‹</button><div><div class="kicker">OCR-ERGEBNIS</div><h2>Erkannter Artikelcode</h2></div></div>
+      <article class="code-card">
+        <span>Gefundener X20-Code</span>
+        <strong id="ocrResultCode">–</strong>
+        <small id="ocrRawText">Bitte Treffer kontrollieren.</small>
+      </article>
+      <article class="panel form-stack">
+        <button id="ocrAcceptBtn" class="primary" type="button">Code übernehmen</button>
+        <button id="ocrRetryBtn" class="secondary" type="button">Nochmals fotografieren</button>
+        <button id="ocrEditBtn" class="text-button" type="button">Code manuell korrigieren</button>
       </article>
     </section>
 
@@ -101,5 +138,6 @@
   <div id="toast" class="toast"></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="./app-v051.js?v=51"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="./app-v06.js?v=60"></script>
 </body></html>

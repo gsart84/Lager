@@ -1,6 +1,16 @@
-# SPS Lager PWA v0.5.1
+# SPS Lager PWA v0.6 OCR
 
-Fehlerbehebung: Neue Artikel lassen sich wieder zuverlässig speichern.
+Neu:
+- Barcode scannen
+- X20-Aufdruck per Kamera erkennen
+- OCR sucht ausschliesslich nach Codes, die mit X20 beginnen
+- Kontrastverstärkung für schwarze Schrift auf grauem Kunststoff
+- Treffer wird vor dem Übernehmen angezeigt
+- Vorhandene IndexedDB-Lagerdaten bleiben erhalten
 
 ## GitHub-Update
-Alle losen Dateien hochladen. `index.html` und `service-worker.js` ersetzen. Die neue Datei `app-v051.js` muss vorhanden sein. Die alte `app-v05.js` kann gelöscht werden. Danach Commit speichern und 1–3 Minuten warten.
+Alle losen Dateien in das Root-Verzeichnis des Repositories hochladen.
+Wichtig: index.html und service-worker.js ersetzen.
+Neue Dateien: app-v06.js, style-v06.css, manifest-v06.webmanifest.
+
+Beim ersten OCR-Einsatz ist Internet nötig, damit Tesseract.js und das englische Erkennungsmodell geladen werden.
