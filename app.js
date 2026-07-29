@@ -1,30 +1,30 @@
-# SPS Lager PWA v0.2
-
-Lokale Inventarverwaltung für SPS-Karten auf dem iPhone.
-
-## Installation auf dem iPhone
-
-Eine PWA kann aus Sicherheitsgründen nicht direkt aus einer ZIP-Datei installiert werden. Der Ordner muss einmal über eine HTTPS-Adresse bereitgestellt werden. Danach:
-
-1. Adresse in **Safari** öffnen.
-2. Unten auf **Teilen** tippen.
-3. **Zum Home-Bildschirm** wählen.
-4. SPS Lager künftig über das neue App-Symbol starten.
-
-Danach funktionieren Oberfläche, Datenbank und bereits geladener Scanner offline. Sämtliche Lagerdaten bleiben in der lokalen Safari-/PWA-Datenbank des iPhones.
-
-## Funktionen
-
-- Barcode scannen
-- neue Artikel mit Anfangsbestand anlegen
-- Bestand mit frei wählbarer Menge oder ±5/±10 ändern
-- Lagerübersicht und Suche
-- CSV-Export
-- Excel-kompatibler XLS-Export
-- PDF über Drucken/Teilen
-- JSON-Backup und Wiederherstellung
-- lokale IndexedDB ohne Benutzerkonto oder Cloud
-
-## Wichtiger Hinweis
-
-Beim Löschen der Website-Daten von Safari oder der PWA können lokale Bestände verloren gehen. Deshalb regelmässig ein JSON-Backup exportieren.
+const DB_NAME='sps-lager-db'; const DB_VERSION=1; const STORE='articles';
+let db; let scanner=null; let lastView='homeView';
+const $=s=>document.querySelector(s); const $$=s=>[...document.querySelectorAll(s)];
+function uid(){return crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2)}
+function toast(msg){const el=$('#toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800)}
+function esc(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function showView(id){$$('.view').forEach(v=>v.classList.toggle('active',v.id===id)); if(id!=='scanView') stopScanner(); if(id==='homeView') refreshHome(); if(id==='overviewView') renderInventory(); lastView=id; window.scrollTo(0,0)}
+function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains(STORE)){const s=d.createObjectStore(STORE,{keyPath:'id'});s.createIndex('barcode','barcode',{unique:true});s.createIndex('name','name')}};req.onsuccess=()=>{db=req.result;resolve()};req.onerror=()=>reject(req.error)})}
+function tx(mode='readonly'){return db.transaction(STORE,mode).objectStore(STORE)}
+function getAll(){return new Promise((resolve,reject)=>{const r=tx().getAll();r.onsuccess=()=>resolve(r.result||[]);r.onerror=()=>reject(r.error)})}
+function getById(id){return new Promise((resolve,reject)=>{const r=tx().get(id);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+function getByBarcode(code){return new Promise((resolve,reject)=>{const r=tx().index('barcode').get(code);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
+function putArticle(a){return new Promise((resolve,reject)=>{const r=tx('readwrite').put(a);r.onsuccess=()=>resolve(a);r.onerror=()=>reject(r.error)})}
+function deleteArticle(id){return new Promise((resolve,reject)=>{const r=tx('readwrite').delete(id);r.onsuccess=resolve;r.onerror=()=>reject(r.error)})}
+async function refreshHome(){const all=await getAll();$('#totalQty').textContent=all.reduce((s,a)=>s+Number(a.qty||0),0).toLocaleString('de-CH');$('#articleCount').textContent=`${all.length} verschiedene Artikel`}
+async function handleBarcode(raw){const code=String(raw||'').trim();if(!code)return; await stopScanner();const found=await getByBarcode(code);openArticle(found||null,code)}
+function openArticle(article=null,barcode=''){showView('articleView');$('#articleId').value=article?.id||'';$('#articleName').value=article?.name||'';$('#articleBarcode').value=article?.barcode||barcode;$('#articleQty').value=article?.qty??0;$('#articleHeading').textContent=article?'Artikel bearbeiten':'Neuer Artikel';$('#articleBarcodeText').textContent=article?.barcode||barcode||'Manuelle Erfassung';$('#stockPanel').classList.toggle('hidden',!article);$('#stockValue').textContent=article?.qty??0;$('#initialQtyLabel').classList.toggle('hidden',!!article);setTimeout(()=>article?$('#changeQty').focus():$('#articleName').focus(),100)}
+async function saveForm(e){e.preventDefault();const id=$('#articleId').value;const barcode=$('#articleBarcode').value.trim();const name=$('#articleName').value.trim();if(!barcode||!name)return;const duplicate=await getByBarcode(barcode);if(duplicate&&duplicate.id!==id){toast('Dieser Barcode existiert bereits');return}let article=id?await getById(id):null;article=article||{id:uid(),createdAt:new Date().toISOString(),qty:Number($('#articleQty').value||0)};article.name=name;article.barcode=barcode;article.updatedAt=new Date().toISOString();await putArticle(article);toast('Artikel gespeichert');openArticle(article)}
+async function changeStock(delta){const id=$('#articleId').value;if(!id)return;const a=await getById(id);const next=Math.max(0,Number(a.qty||0)+Number(delta));a.qty=next;a.updatedAt=new Date().toISOString();await putArticle(a);$('#stockValue').textContent=next;navigator.vibrate?.(40);toast(`${delta>0?'+':''}${delta} → Bestand ${next}`)}
+async function renderInventory(){const q=$('#searchInput').value.trim().toLowerCase();let all=await getAll();all.sort((a,b)=>a.name.localeCompare(b.name,'de',{numeric:true}));if(q)all=all.filter(a=>a.name.toLowerCase().includes(q)||a.barcode.toLowerCase().includes(q));$('#overviewMeta').textContent=`${all.length} Artikel · ${all.reduce((s,a)=>s+Number(a.qty||0),0)} Stück`;$('#emptyState').classList.toggle('hidden',all.length>0);$('#inventoryList').innerHTML=all.map(a=>`<button class="inventory-item" data-id="${esc(a.id)}"><div><div class="inventory-name">${esc(a.name)}</div><div class="inventory-code">${esc(a.barcode)}</div></div><div class="inventory-qty">${Number(a.qty||0)}</div></button>`).join('');$$('.inventory-item').forEach(b=>b.onclick=async()=>openArticle(await getById(b.dataset.id)))}
+async function startScanner(){if(typeof Html5Qrcode==='undefined'){toast('Scannerbibliothek nicht geladen');$('#scanStatus').textContent='Internetverbindung für ersten Scannerstart nötig';return}try{$('#scanStatus').textContent='Kamera wird gestartet…';scanner=new Html5Qrcode('reader');const config={fps:12,qrbox:{width:280,height:150},aspectRatio:1.4,formatsToSupport:[Html5QrcodeSupportedFormats.CODE_128,Html5QrcodeSupportedFormats.CODE_39,Html5QrcodeSupportedFormats.CODE_93,Html5QrcodeSupportedFormats.EAN_13,Html5QrcodeSupportedFormats.EAN_8,Html5QrcodeSupportedFormats.UPC_A,Html5QrcodeSupportedFormats.UPC_E,Html5QrcodeSupportedFormats.ITF,Html5QrcodeSupportedFormats.QR_CODE,Html5QrcodeSupportedFormats.DATA_MATRIX]};await scanner.start({facingMode:'environment'},config,code=>handleBarcode(code),()=>{});$('#scanStatus').textContent='Scanner aktiv';$('#startScanBtn').classList.add('hidden');$('#stopScanBtn').classList.remove('hidden')}catch(err){console.error(err);$('#scanStatus').textContent='Kamera konnte nicht gestartet werden';toast('Kamerazugriff prüfen');scanner=null}}
+async function stopScanner(){if(scanner){try{if(scanner.isScanning)await scanner.stop();await scanner.clear()}catch(e){}scanner=null}$('#startScanBtn')?.classList.remove('hidden');$('#stopScanBtn')?.classList.add('hidden');if($('#reader'))$('#reader').innerHTML=''}
+function fileDownload(name,type,data){const blob=new Blob([data],{type});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function stamp(){return new Date().toISOString().slice(0,10)}
+async function exportCSV(){const all=await getAll();const rows=[['Artikel','Barcode','Bestand'],...all.sort((a,b)=>a.name.localeCompare(b.name,'de')).map(a=>[a.name,a.barcode,a.qty])];const csv='\ufeff'+rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(';')).join('\r\n');fileDownload(`SPS-Lager_${stamp()}.csv`,'text/csv;charset=utf-8',csv)}
+async function exportExcel(){const all=(await getAll()).sort((a,b)=>a.name.localeCompare(b.name,'de'));const rows=all.map(a=>`<Row><Cell><Data ss:Type="String">${esc(a.name)}</Data></Cell><Cell><Data ss:Type="String">${esc(a.barcode)}</Data></Cell><Cell><Data ss:Type="Number">${Number(a.qty||0)}</Data></Cell></Row>`).join('');const xml=`<?xml version="1.0"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Worksheet ss:Name="SPS Lager"><Table><Row><Cell><Data ss:Type="String">Artikel</Data></Cell><Cell><Data ss:Type="String">Barcode</Data></Cell><Cell><Data ss:Type="String">Bestand</Data></Cell></Row>${rows}</Table></Worksheet></Workbook>`;fileDownload(`SPS-Lager_${stamp()}.xls`,'application/vnd.ms-excel',xml)}
+async function exportBackup(){const all=await getAll();fileDownload(`SPS-Lager_Backup_${stamp()}.json`,'application/json',JSON.stringify({version:1,exportedAt:new Date().toISOString(),articles:all},null,2))}
+async function restoreBackup(file){try{const data=JSON.parse(await file.text());if(!Array.isArray(data.articles))throw new Error();if(!confirm(`${data.articles.length} Artikel importieren? Vorhandene gleiche IDs werden überschrieben.`))return;for(const a of data.articles)await putArticle(a);toast('Backup importiert');renderInventory()}catch(e){toast('Ungültige Backupdatei')}}
+function bind(){$$('[data-go]').forEach(b=>b.onclick=()=>showView(b.dataset.go));$('#manualNewBtn').onclick=()=>openArticle();$('#manualBarcodeForm').onsubmit=e=>{e.preventDefault();handleBarcode($('#manualBarcode').value)};$('#articleForm').onsubmit=saveForm;$('#articleBackBtn').onclick=()=>showView('overviewView');$('#startScanBtn').onclick=startScanner;$('#stopScanBtn').onclick=stopScanner;$('#minusBtn').onclick=()=>changeStock(-Math.max(1,Number($('#changeQty').value||1)));$('#plusBtn').onclick=()=>changeStock(Math.max(1,Number($('#changeQty').value||1)));$$('[data-delta]').forEach(b=>b.onclick=()=>changeStock(Number(b.dataset.delta)));$('#deleteArticleBtn').onclick=async()=>{const id=$('#articleId').value;if(id&&confirm('Artikel wirklich löschen?')){await deleteArticle(id);toast('Artikel gelöscht');showView('overviewView')}};$('#searchInput').oninput=renderInventory;$('#csvBtn').onclick=exportCSV;$('#excelBtn').onclick=exportExcel;$('#pdfBtn').onclick=()=>window.print();$('#backupBtn').onclick=exportBackup;$('#restoreInput').onchange=e=>e.target.files[0]&&restoreBackup(e.target.files[0])}
+(async()=>{await openDB();bind();refreshHome();if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js').catch(()=>{});try{await navigator.storage?.persist?.()}catch(e){}})();
