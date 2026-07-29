@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#10243d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SPS Lager">
+  <title>SPS Lager</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">Lokale Inventarverwaltung</div>
+      <h1>SPS Lager</h1>
+    </div>
+    <div id="statusPill" class="status-pill">lokal</div>
+  </header>
+
+  <main id="app">
+    <section id="homeView" class="view active">
+      <div class="hero-card">
+        <div>
+          <div class="hero-label">Gesamtbestand</div>
+          <div id="totalQty" class="hero-number">0</div>
+          <div id="articleCount" class="hero-sub">0 verschiedene Artikel</div>
+        </div>
+        <div class="hero-icon">▦</div>
+      </div>
+
+      <div class="grid-actions">
+        <button class="action-card primary" data-go="scanView">
+          <span class="action-icon">⌁</span>
+          <strong>Barcode scannen</strong>
+          <small>Artikel finden oder neu anlegen</small>
+        </button>
+        <button class="action-card" data-go="overviewView">
+          <span class="action-icon">☷</span>
+          <strong>Lagerübersicht</strong>
+          <small>Alle Karten und Bestände</small>
+        </button>
+      </div>
+
+      <button class="wide-button" id="manualNewBtn">＋ Artikel ohne Scanner anlegen</button>
+      <div id="installHint" class="info-card">
+        <strong>Auf dem iPhone installieren</strong>
+        <span>In Safari unten auf Teilen tippen und dann „Zum Home-Bildschirm“. Danach läuft SPS Lager wie eine App und offline.</span>
+      </div>
+      <div class="info-card">
+        <strong>Alles bleibt auf diesem Gerät.</strong>
+        <span>Keine Anmeldung, kein Server, keine Cloud. Exporte erzeugst du nur bewusst.</span>
+      </div>
+    </section>
+
+    <section id="scanView" class="view">
+      <div class="section-head">
+        <button class="back-btn" data-go="homeView">‹</button>
+        <div><h2>Barcode scannen</h2><p>Kamera auf den Code richten</p></div>
+      </div>
+      <div id="reader" class="scanner-box"></div>
+      <div id="scanStatus" class="scan-status">Scanner noch nicht gestartet</div>
+      <button id="startScanBtn" class="main-button">Kamera starten</button>
+      <button id="stopScanBtn" class="secondary-button hidden">Scanner stoppen</button>
+      <div class="divider"><span>oder</span></div>
+      <form id="manualBarcodeForm" class="inline-form">
+        <input id="manualBarcode" autocomplete="off" inputmode="text" placeholder="Barcode manuell eingeben">
+        <button type="submit">Öffnen</button>
+      </form>
+    </section>
+
+    <section id="articleView" class="view">
+      <div class="section-head">
+        <button class="back-btn" id="articleBackBtn">‹</button>
+        <div><h2 id="articleHeading">Artikel</h2><p id="articleBarcodeText"></p></div>
+      </div>
+
+      <form id="articleForm" class="form-card">
+        <input type="hidden" id="articleId">
+        <label>Bezeichnung
+          <input id="articleName" required placeholder="z. B. X20DI9371">
+        </label>
+        <label>Barcode
+          <input id="articleBarcode" required autocomplete="off">
+        </label>
+        <label id="initialQtyLabel">Bestand
+          <input id="articleQty" type="number" min="0" step="1" required value="0">
+        </label>
+        <button type="submit" class="main-button">Speichern</button>
+      </form>
+
+      <div id="stockPanel" class="stock-panel hidden">
+        <div class="stock-caption">Aktueller Bestand</div>
+        <div id="stockValue" class="stock-value">0</div>
+        <div class="stepper">
+          <button id="minusBtn" class="step minus" type="button">−</button>
+          <input id="changeQty" type="number" min="1" step="1" value="1" inputmode="numeric">
+          <button id="plusBtn" class="step plus" type="button">＋</button>
+        </div>
+        <div class="quick-row">
+          <button type="button" data-delta="-5">−5</button>
+          <button type="button" data-delta="-10">−10</button>
+          <button type="button" data-delta="5">＋5</button>
+          <button type="button" data-delta="10">＋10</button>
+        </div>
+        <button id="deleteArticleBtn" type="button" class="danger-link">Artikel löschen</button>
+      </div>
+    </section>
+
+    <section id="overviewView" class="view">
+      <div class="section-head">
+        <button class="back-btn" data-go="homeView">‹</button>
+        <div><h2>Lagerübersicht</h2><p id="overviewMeta">0 Artikel</p></div>
+      </div>
+      <input id="searchInput" class="search" type="search" placeholder="Artikel oder Barcode suchen">
+      <div id="inventoryList" class="inventory-list"></div>
+      <div id="emptyState" class="empty-state hidden">Noch keine Artikel vorhanden.</div>
+
+      <div class="export-card">
+        <h3>Lager exportieren</h3>
+        <div class="export-grid">
+          <button id="csvBtn">CSV</button>
+          <button id="excelBtn">Excel</button>
+          <button id="pdfBtn">PDF</button>
+          <button id="backupBtn">Backup</button>
+        </div>
+        <label class="import-label">Backup wiederherstellen
+          <input id="restoreInput" type="file" accept="application/json,.json">
+        </label>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
