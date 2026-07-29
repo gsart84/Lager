@@ -11,7 +11,7 @@
   <link rel="manifest" href="./manifest-v05.webmanifest">
   <link rel="apple-touch-icon" href="./apple-touch-icon.png">
   <link rel="icon" href="./icon-192.png">
-  <link rel="stylesheet" href="./style-v05.css?v=5">
+  <link rel="stylesheet" href="./style-v05.css?v=51">
   <title>SPS Lager</title>
 </head>
 <body>
@@ -55,10 +55,10 @@
 
     <section id="newArticle" class="view">
       <div class="page-head"><button class="back" type="button">‹</button><div><div class="kicker">NEUER ARTIKEL</div><h2>Bestand erfassen</h2></div></div>
-      <article class="code-card"><span>Erkannter Code</span><strong id="newCodeText">–</strong><small>Wird automatisch als Artikelname verwendet.</small></article>
+      <article class="code-card"><span>Erkannter Code</span><strong id="newCodeText">–</strong><small>Wird automatisch als Artikelname verwendet.</small><input id="newBarcode" type="hidden"></article>
       <form id="newForm" class="panel form-stack">
         <label>Anfangsbestand<input id="newStock" type="number" inputmode="numeric" min="0" step="1" value="0" required></label>
-        <button class="primary" type="submit">Artikel speichern</button>
+        <button id="saveArticleBtn" class="primary" type="button">Artikel speichern</button>
         <button id="editNameBeforeSave" class="secondary" type="button">Anderen Anzeigenamen verwenden</button>
       </form>
     </section>
@@ -101,5 +101,5 @@
   <div id="toast" class="toast"></div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-<script src="./app-v05.js?v=5"></script>
+<script src="./app-v051.js?v=51"></script>
 </body></html>
