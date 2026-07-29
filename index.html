@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SPS Lager">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" href="./icon-192.png">
+<link rel="stylesheet" href="./style.css">
+<title>SPS Lager</title>
+</head>
+<body>
+<header><div><small>LOKALE INVENTAR-APP</small><h1>SPS Lager</h1></div></header>
+<main>
+<section id="home" class="view active">
+<div class="hero"><div><span>Aktueller Bestand</span><b id="articleCount">0 Artikel</b><em id="pieceCount">0 Stück total</em></div><div class="heroicon">📦</div></div>
+<div class="actions">
+<button id="scanBtn"><i>📷</i><span><b>Barcode scannen</b><small>Artikel erkennen oder neu anlegen</small></span></button>
+<button id="manualBtn"><i>⌨️</i><span><b>Code eingeben</b><small>Barcode manuell eingeben</small></span></button>
+<button id="listBtn"><i>📋</i><span><b>Lagerübersicht</b><small>Alle SPS-Karten anzeigen</small></span></button>
+<button id="exportBtn"><i>📤</i><span><b>Lager exportieren</b><small>CSV, Excel, PDF oder Backup</small></span></button>
+</div>
+<div class="notice"><b>Alles bleibt auf diesem iPhone.</b><p>GitHub liefert nur die App-Dateien. Deine Artikel und Bestände liegen lokal im Browser.</p></div>
+</section>
+
+<section id="scanner" class="view">
+<div class="head"><button class="back">‹</button><div><small>KAMERA</small><h2>Barcode scannen</h2></div></div>
+<div id="reader"></div><p id="scanStatus">Kamera wird vorbereitet …</p>
+<button id="stopScan" class="secondary">Scanner beenden</button>
+</section>
+
+<section id="edit" class="view">
+<div class="head"><button class="back">‹</button><div><small id="editMode">NEUER ARTIKEL</small><h2 id="editTitle">SPS-Karte anlegen</h2></div></div>
+<form id="articleForm" class="card">
+<label>Barcode<input id="barcode" required autocomplete="off"></label>
+<label>Name der SPS-Karte<input id="name" required autocomplete="off" placeholder="z. B. X20DI9371"></label>
+<label id="stockWrap">Anfangsbestand<input id="stock" type="number" min="0" step="1" value="0" required></label>
+<button class="primary" type="submit">Speichern</button>
+</form>
+</section>
+
+<section id="adjust" class="view">
+<div class="head"><button class="back">‹</button><div><small>BESTAND ÄNDERN</small><h2 id="adjustName">Artikel</h2></div></div>
+<div class="stockcard"><span>Aktueller Bestand</span><b id="currentStock">0</b><em>Stück</em></div>
+<div class="card">
+<label>Änderung<input id="delta" type="number" step="1" value="-1"></label>
+<div class="quick">
+<button type="button" data-delta="-10">−10</button><button type="button" data-delta="-5">−5</button><button type="button" data-delta="-1">−1</button>
+<button type="button" data-delta="1">+1</button><button type="button" data-delta="5">+5</button><button type="button" data-delta="10">+10</button>
+</div>
+<button id="bookBtn" class="primary" type="button">Änderung buchen</button>
+<button id="editBtn" class="secondary" type="button">Artikelname bearbeiten</button>
+</div>
+</section>
+
+<section id="inventory" class="view">
+<div class="head"><button class="back">‹</button><div><small>ALLE ARTIKEL</small><h2>Lagerübersicht</h2></div></div>
+<input id="search" class="search" type="search" placeholder="Name oder Barcode suchen …">
+<div id="items"></div>
+</section>
+
+<section id="exports" class="view">
+<div class="head"><button class="back">‹</button><div><small>DATEN HERAUSGEBEN</small><h2>Lager exportieren</h2></div></div>
+<div class="actions">
+<button id="csvBtn"><i>🧾</i><span><b>CSV exportieren</b><small>Für Excel und Tabellenprogramme</small></span></button>
+<button id="xlsBtn"><i>📊</i><span><b>Excel exportieren</b><small>Als .xls-Datei</small></span></button>
+<button id="pdfBtn"><i>📄</i><span><b>PDF erstellen</b><small>Über den iPhone-Druckdialog</small></span></button>
+<button id="backupBtn"><i>💾</i><span><b>Backup speichern</b><small>Vollständige JSON-Sicherung</small></span></button>
+<label class="upload"><i>♻️</i><span><b>Backup wiederherstellen</b><small>JSON-Datei auswählen</small></span><input id="restore" type="file" accept=".json,application/json"></label>
+</div>
+</section>
+</main>
+<div id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
