@@ -1,34 +1,8 @@
-const CACHE = 'sps-lager-v0.2';
-const LOCAL = [
-  './', './index.html', './style.css', './app.js',
-  './manifest.webmanifest', './icon-192.png', './icon-512.png',
-  './apple-touch-icon.png', './icon.svg'
-];
-const SCANNER = 'https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js';
-
-self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(async cache => {
-    await cache.addAll(LOCAL);
-    try { await cache.add(SCANNER); } catch (_) {}
-  }));
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(Promise.all([
-    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))),
-    self.clients.claim()
-  ]));
-});
-
-self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
-  event.respondWith(caches.match(event.request).then(cached => {
-    if (cached) return cached;
-    return fetch(event.request).then(response => {
-      const copy = response.clone();
-      caches.open(CACHE).then(cache => cache.put(event.request, copy));
-      return response;
-    }).catch(() => event.request.mode === 'navigate' ? caches.match('./index.html') : Promise.reject());
-  }));
+const CACHE='sps-lager-v0.4-familyhub';
+const LOCAL=['./','./index.html','./style-v04.css?v=4','./app-v04.js?v=4','./manifest-v04.webmanifest','./icon-192.png','./icon-512.png','./apple-touch-icon.png'];
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(LOCAL)).then(()=>self.skipWaiting())));
+self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
+self.addEventListener('fetch',e=>{
+ if(e.request.mode==='navigate'){e.respondWith(fetch(e.request).then(r=>{const c=r.clone();caches.open(CACHE).then(x=>x.put('./index.html',c));return r}).catch(()=>caches.match('./index.html')));return}
+ e.respondWith(caches.match(e.request).then(c=>c||fetch(e.request)));
 });

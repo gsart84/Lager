@@ -2,140 +2,193 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-  <meta name="theme-color" content="#10243d">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#eef3f8">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="SPS Lager">
+  <meta name="description" content="Lokale SPS-Lagerverwaltung mit Barcode-Scanner">
+  <link rel="manifest" href="./manifest-v04.webmanifest">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="icon" href="./icon-192.png">
+  <link rel="stylesheet" href="./style-v04.css?v=4">
   <title>SPS Lager</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="topbar">
+<div id="appShell">
+  <header class="app-header">
     <div>
-      <div class="eyebrow">Lokale Inventarverwaltung</div>
+      <div class="app-kicker">Werkstatt · Lokal auf diesem iPhone</div>
       <h1>SPS Lager</h1>
     </div>
-    <div id="statusPill" class="status-pill">lokal</div>
+    <div class="header-badge">B&amp;R</div>
   </header>
 
-  <main id="app">
+  <main class="app-main">
     <section id="homeView" class="view active">
-      <div class="hero-card">
+      <article class="summary-card">
         <div>
-          <div class="hero-label">Gesamtbestand</div>
-          <div id="totalQty" class="hero-number">0</div>
-          <div id="articleCount" class="hero-sub">0 verschiedene Artikel</div>
+          <div class="summary-label">Aktueller Lagerbestand</div>
+          <div id="summaryCount" class="summary-value">0 Artikel</div>
+          <div id="summaryPieces" class="summary-sub">0 Stück total</div>
         </div>
-        <div class="hero-icon">▦</div>
+        <div class="summary-icon">▦</div>
+      </article>
+
+      <div class="section-title-row">
+        <h2>Schnellzugriff</h2>
+        <span>Inventur &amp; Buchung</span>
       </div>
 
-      <div class="grid-actions">
-        <button class="action-card primary" data-go="scanView">
-          <span class="action-icon">⌁</span>
-          <strong>Barcode scannen</strong>
-          <small>Artikel finden oder neu anlegen</small>
+      <div class="dashboard-grid">
+        <button id="scanBtn" class="hub-card accent-card" type="button">
+          <span class="hub-icon">▣</span>
+          <span class="hub-content">
+            <strong>Barcode scannen</strong>
+            <small>Artikel erkennen oder neu erfassen</small>
+          </span>
+          <span class="chevron">›</span>
         </button>
-        <button class="action-card" data-go="overviewView">
-          <span class="action-icon">☷</span>
-          <strong>Lagerübersicht</strong>
-          <small>Alle Karten und Bestände</small>
+
+        <button id="manualBtn" class="hub-card" type="button">
+          <span class="hub-icon">⌨</span>
+          <span class="hub-content">
+            <strong>Code eingeben</strong>
+            <small>Manuelle Erfassung ohne Kamera</small>
+          </span>
+          <span class="chevron">›</span>
+        </button>
+
+        <button id="inventoryBtn" class="hub-card" type="button">
+          <span class="hub-icon">☷</span>
+          <span class="hub-content">
+            <strong>Lagerübersicht</strong>
+            <small>Alle SPS-Karten und Bestände</small>
+          </span>
+          <span class="chevron">›</span>
+        </button>
+
+        <button id="exportBtn" class="hub-card" type="button">
+          <span class="hub-icon">⇧</span>
+          <span class="hub-content">
+            <strong>Lager exportieren</strong>
+            <small>CSV, Excel, PDF oder Backup</small>
+          </span>
+          <span class="chevron">›</span>
         </button>
       </div>
 
-      <button class="wide-button" id="manualNewBtn">＋ Artikel ohne Scanner anlegen</button>
-      <div id="installHint" class="info-card">
-        <strong>Auf dem iPhone installieren</strong>
-        <span>In Safari unten auf Teilen tippen und dann „Zum Home-Bildschirm“. Danach läuft SPS Lager wie eine App und offline.</span>
-      </div>
-      <div class="info-card">
-        <strong>Alles bleibt auf diesem Gerät.</strong>
-        <span>Keine Anmeldung, kein Server, keine Cloud. Exporte erzeugst du nur bewusst.</span>
-      </div>
+      <article class="privacy-card">
+        <div class="privacy-icon">●</div>
+        <div>
+          <strong>Lokale Datenhaltung</strong>
+          <p>Artikel und Bestände bleiben in der Browser-Datenbank dieses iPhones.</p>
+        </div>
+      </article>
     </section>
 
-    <section id="scanView" class="view">
-      <div class="section-head">
-        <button class="back-btn" data-go="homeView">‹</button>
-        <div><h2>Barcode scannen</h2><p>Kamera auf den Code richten</p></div>
+    <section id="scannerView" class="view">
+      <div class="page-head">
+        <button class="back-button" data-back type="button">‹</button>
+        <div>
+          <div class="page-kicker">Kamera</div>
+          <h2>Barcode scannen</h2>
+        </div>
       </div>
-      <div id="reader" class="scanner-box"></div>
-      <div id="scanStatus" class="scan-status">Scanner noch nicht gestartet</div>
-      <button id="startScanBtn" class="main-button">Kamera starten</button>
-      <button id="stopScanBtn" class="secondary-button hidden">Scanner stoppen</button>
-      <div class="divider"><span>oder</span></div>
-      <form id="manualBarcodeForm" class="inline-form">
-        <input id="manualBarcode" autocomplete="off" inputmode="text" placeholder="Barcode manuell eingeben">
-        <button type="submit">Öffnen</button>
-      </form>
+      <article class="content-card">
+        <div id="reader" class="scanner-box"></div>
+        <p id="scanStatus" class="status-text">Kamera wird vorbereitet …</p>
+        <button id="stopScannerBtn" class="secondary-button" type="button">Scanner beenden</button>
+      </article>
     </section>
 
     <section id="articleView" class="view">
-      <div class="section-head">
-        <button class="back-btn" id="articleBackBtn">‹</button>
-        <div><h2 id="articleHeading">Artikel</h2><p id="articleBarcodeText"></p></div>
+      <div class="page-head">
+        <button class="back-button" data-back type="button">‹</button>
+        <div>
+          <div id="articleModeLabel" class="page-kicker">Artikel</div>
+          <h2 id="articleTitle">SPS-Karte anlegen</h2>
+        </div>
       </div>
-
-      <form id="articleForm" class="form-card">
-        <input type="hidden" id="articleId">
-        <label>Bezeichnung
-          <input id="articleName" required placeholder="z. B. X20DI9371">
-        </label>
+      <form id="articleForm" class="content-card form-stack">
         <label>Barcode
-          <input id="articleBarcode" required autocomplete="off">
+          <input id="barcodeInput" type="text" autocomplete="off" required>
         </label>
-        <label id="initialQtyLabel">Bestand
-          <input id="articleQty" type="number" min="0" step="1" required value="0">
+        <label>Name der SPS-Karte
+          <input id="nameInput" type="text" autocomplete="off" placeholder="z. B. X20DI9371" required>
         </label>
-        <button type="submit" class="main-button">Speichern</button>
+        <label id="initialStockLabel">Anfangsbestand
+          <input id="stockInput" type="number" inputmode="numeric" min="0" step="1" value="0" required>
+        </label>
+        <button class="primary-button" type="submit">Artikel speichern</button>
       </form>
-
-      <div id="stockPanel" class="stock-panel hidden">
-        <div class="stock-caption">Aktueller Bestand</div>
-        <div id="stockValue" class="stock-value">0</div>
-        <div class="stepper">
-          <button id="minusBtn" class="step minus" type="button">−</button>
-          <input id="changeQty" type="number" min="1" step="1" value="1" inputmode="numeric">
-          <button id="plusBtn" class="step plus" type="button">＋</button>
-        </div>
-        <div class="quick-row">
-          <button type="button" data-delta="-5">−5</button>
-          <button type="button" data-delta="-10">−10</button>
-          <button type="button" data-delta="5">＋5</button>
-          <button type="button" data-delta="10">＋10</button>
-        </div>
-        <button id="deleteArticleBtn" type="button" class="danger-link">Artikel löschen</button>
-      </div>
     </section>
 
-    <section id="overviewView" class="view">
-      <div class="section-head">
-        <button class="back-btn" data-go="homeView">‹</button>
-        <div><h2>Lagerübersicht</h2><p id="overviewMeta">0 Artikel</p></div>
-      </div>
-      <input id="searchInput" class="search" type="search" placeholder="Artikel oder Barcode suchen">
-      <div id="inventoryList" class="inventory-list"></div>
-      <div id="emptyState" class="empty-state hidden">Noch keine Artikel vorhanden.</div>
-
-      <div class="export-card">
-        <h3>Lager exportieren</h3>
-        <div class="export-grid">
-          <button id="csvBtn">CSV</button>
-          <button id="excelBtn">Excel</button>
-          <button id="pdfBtn">PDF</button>
-          <button id="backupBtn">Backup</button>
+    <section id="adjustView" class="view">
+      <div class="page-head">
+        <button class="back-button" data-back type="button">‹</button>
+        <div>
+          <div class="page-kicker">Bestand ändern</div>
+          <h2 id="adjustName">Artikel</h2>
         </div>
-        <label class="import-label">Backup wiederherstellen
-          <input id="restoreInput" type="file" accept="application/json,.json">
+      </div>
+
+      <article class="stock-display">
+        <span>Aktueller Bestand</span>
+        <strong id="currentStock">0</strong>
+        <small>Stück</small>
+      </article>
+
+      <article class="content-card form-stack">
+        <label>Änderung
+          <input id="deltaInput" type="number" inputmode="numeric" step="1" value="-1">
         </label>
+        <div class="quick-buttons">
+          <button type="button" data-delta="-10">−10</button>
+          <button type="button" data-delta="-5">−5</button>
+          <button type="button" data-delta="-1">−1</button>
+          <button type="button" data-delta="1">+1</button>
+          <button type="button" data-delta="5">+5</button>
+          <button type="button" data-delta="10">+10</button>
+        </div>
+        <button id="applyDeltaBtn" class="primary-button" type="button">Änderung buchen</button>
+        <button id="editArticleBtn" class="secondary-button" type="button">Artikel bearbeiten</button>
+      </article>
+    </section>
+
+    <section id="inventoryView" class="view">
+      <div class="page-head">
+        <button class="back-button" data-back type="button">‹</button>
+        <div>
+          <div class="page-kicker">Alle Artikel</div>
+          <h2>Lagerübersicht</h2>
+        </div>
+      </div>
+      <input id="searchInput" class="search-field" type="search" placeholder="Name oder Barcode suchen …">
+      <div id="inventoryList" class="inventory-list"></div>
+    </section>
+
+    <section id="exportView" class="view">
+      <div class="page-head">
+        <button class="back-button" data-back type="button">‹</button>
+        <div>
+          <div class="page-kicker">Daten weitergeben</div>
+          <h2>Lager exportieren</h2>
+        </div>
+      </div>
+      <div class="dashboard-grid">
+        <button id="csvBtn" class="hub-card" type="button"><span class="hub-icon">CSV</span><span class="hub-content"><strong>CSV exportieren</strong><small>Ideal für Excel</small></span><span class="chevron">›</span></button>
+        <button id="xlsBtn" class="hub-card" type="button"><span class="hub-icon">XLS</span><span class="hub-content"><strong>Excel exportieren</strong><small>Als .xls-Datei</small></span><span class="chevron">›</span></button>
+        <button id="pdfBtn" class="hub-card" type="button"><span class="hub-icon">PDF</span><span class="hub-content"><strong>PDF erstellen</strong><small>Über den iPhone-Druckdialog</small></span><span class="chevron">›</span></button>
+        <button id="backupBtn" class="hub-card" type="button"><span class="hub-icon">⇩</span><span class="hub-content"><strong>Backup speichern</strong><small>Vollständige JSON-Sicherung</small></span><span class="chevron">›</span></button>
+        <label class="hub-card file-card"><span class="hub-icon">↺</span><span class="hub-content"><strong>Backup laden</strong><small>JSON-Datei auswählen</small></span><span class="chevron">›</span><input id="restoreInput" type="file" accept=".json,application/json"></label>
       </div>
     </section>
   </main>
-
   <div id="toast" class="toast"></div>
-  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-  <script src="app.js"></script>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="./app-v04.js?v=4"></script>
 </body>
 </html>
